@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from datetime import date
 import config
 import smtplib
 def main():
@@ -8,11 +9,12 @@ def main():
 
 
 def sendMail(msg,subject):
-    #print("Today's 6 before 6 is " + h_data)
+
     emails=getContacts('contacts.txt')
 
     for x in range(len(emails)):
         print(emails[x])
+
         try:
             server = smtplib.SMTP('smtp.gmail.com:587')
             server.ehlo()
@@ -26,8 +28,9 @@ def sendMail(msg,subject):
             print("Email failed to send.")
 
 
+
 def getContacts(filename):
-    #print('got this far')
+
     emails = []
     with open(filename, mode='r', encoding='utf-8') as contacts_file:
         for a_contact in contacts_file:
@@ -38,19 +41,29 @@ def getContacts(filename):
 
 
 def createMessage():
+
     ramen_url = 'https://ramen.ie/whats-the-6before6/'
     ramen_response = requests.get(ramen_url, timeout=5)
     soup = BeautifulSoup(ramen_response.content, "html.parser")
-    # print(soup.prettify())
     h_data = soup.find_all('h2')[0].get_text()
 
-    #print("Today's 6 before 6 is "+h_data)
+    #send h_data to a text file
+    write_to_file(h_data)
+
+    #start putting the message together
     subject = "Today's 6 before 6"
-    msg = "Hello \nThis is an automated email.\nToday's 6 before 6 is "+ h_data
+    msg = "Hello \nThis is an automated email.\nToday's 6 before 6 is "+ h_data+"\nBest regards\nMDR guy."
     sendMail(msg,subject)
-    #print(subject)
-    #print(msg)
 
+#function to record history of previous 6 before 6s
 
-# main route
+def write_to_file(h_data):
+    print(h_data)
+    today = str(date.today())
+    string_to_write = h_data + "-" + today
+    history_file=open("historyFile.txt", "a")
+    history_file.write(string_to_write+"\n")
+    history_file.close()
+
+    # main route
 main()
