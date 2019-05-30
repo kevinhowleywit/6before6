@@ -45,7 +45,7 @@ def createMessage():
     ramen_url = 'https://ramen.ie/whats-the-6before6/'
     ramen_response = requests.get(ramen_url, timeout=5)
     soup = BeautifulSoup(ramen_response.content, "html.parser")
-    h_data = soup.find_all('h2')[0].get_text()
+    h_data = soup.find_all('b')[0].get_text()
 
     #send h_data to a text file
     write_to_file(h_data)
