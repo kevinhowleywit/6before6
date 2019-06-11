@@ -24,7 +24,8 @@ def sendMail(msg,subject):
             server.sendmail(config.EMAIL_ADDRESS, emails[x], message)
             server.quit()
             print("Success: Email sent!")
-        except:
+        except Exception as e:
+            print(e)
             print("Email failed to send.")
 
 
@@ -53,6 +54,8 @@ def createMessage():
     #start putting the message together
     subject = "Today's 6 before 6"
     msg = "Hello \nThis is an automated email.\nToday's 6 before 6 is "+ h_data+"\nBest regards\nMDR guy."
+    msg = msg.replace('\xa0','')
+
     sendMail(msg,subject)
 
 #function to record history of previous 6 before 6s
@@ -67,3 +70,4 @@ def write_to_file(h_data):
 
     # main route
 main()
+
